@@ -15,6 +15,15 @@ export class ComiteSolicitud extends Entity {
   })
   respuesta: string;
 
+  @property({
+    type: 'number',
+  })
+  id_solicitud?: number;
+
+  @property({
+    type: 'number',
+  })
+  id_comite?: number;
 
   constructor(data?: Partial<ComiteSolicitud>) {
     super(data);

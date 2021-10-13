@@ -9,6 +9,15 @@ export class DepartamentoProponente extends Entity {
   })
   id?: number;
 
+  @property({
+    type: 'number',
+  })
+  id_proponente?: number;
+
+  @property({
+    type: 'number',
+  })
+  id_departamento?: number;
 
   constructor(data?: Partial<DepartamentoProponente>) {
     super(data);

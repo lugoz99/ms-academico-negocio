@@ -1,4 +1,8 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, belongsTo, hasMany} from '@loopback/repository';
+import {TipoVinculacion} from './tipo-vinculacion.model';
+import {Departamento} from './departamento.model';
+import {DepartamentoProponente} from './departamento-proponente.model';
+import {Solicitud} from './solicitud.model';
 
 @model()
 export class Proponente extends Entity {
@@ -51,10 +55,18 @@ export class Proponente extends Entity {
   celular?: string;
 
   @property({
-    type: 'string',
+    type: 'buffer',
   })
-  foto?: string;
+  foto?: Buffer;
 
+  @belongsTo(() => TipoVinculacion, {name: 'hecha_por'})
+  id_tipo_vinculacion: number;
+
+  @hasMany(() => Departamento, {through: {model: () => DepartamentoProponente, keyFrom: 'id_proponente', keyTo: 'id_departamento'}})
+  departamentosProponentes: Departamento[];
+
+  @hasMany(() => Solicitud, {keyTo: 'id_proponente'})
+  solicitudes: Solicitud[];
 
   constructor(data?: Partial<Proponente>) {
     super(data);

@@ -15,3 +15,4 @@ export * from './jurado.model';
 export * from './area-investigacion.model';
 export * from './jurado-investigacion.model';
 export * from './usuario-jurado.model';
+export * from './p-rueba.model';

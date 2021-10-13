@@ -27,6 +27,10 @@ export class Recordatorio extends Entity {
   })
   hora: string;
 
+  @property({
+    type: 'number',
+  })
+  id_solicitud?: number;
 
   constructor(data?: Partial<Recordatorio>) {
     super(data);
