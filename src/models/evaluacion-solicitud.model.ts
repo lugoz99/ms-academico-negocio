@@ -1,6 +1,7 @@
-import {Entity, model, property, belongsTo} from '@loopback/repository';
-import {Solicitud} from './solicitud.model';
+import {Entity, model, property, hasMany, belongsTo} from '@loopback/repository';
+import {ResultadoEvaluacion} from './resultado-evaluacion.model';
 import {Jurado} from './jurado.model';
+import {Solicitud} from './solicitud.model';
 
 @model()
 export class EvaluacionSolicitud extends Entity {
@@ -35,11 +36,14 @@ export class EvaluacionSolicitud extends Entity {
   })
   observaciones: string;
 
+  @hasMany(() => ResultadoEvaluacion, {keyTo: 'id_evaluacionSolicitud'})
+  resultadosEvaluaciones: ResultadoEvaluacion[];
+
+  @belongsTo(() => Jurado, {name: 'corresponde_a'})
+  id_jurado: number;
+
   @belongsTo(() => Solicitud, {name: 'evalua'})
   id_solicitud: number;
-
-  @belongsTo(() => Jurado, {name: 'corresponde'})
-  id_jurado: number;
 
   constructor(data?: Partial<EvaluacionSolicitud>) {
     super(data);
@@ -50,4 +54,5 @@ export interface EvaluacionSolicitudRelations {
   // describe navigational properties here
 }
 
-export type EvaluacionSolicitudWithRelations = EvaluacionSolicitud & EvaluacionSolicitudRelations;
+export type EvaluacionSolicitudWithRelations = EvaluacionSolicitud &
+  EvaluacionSolicitudRelations;

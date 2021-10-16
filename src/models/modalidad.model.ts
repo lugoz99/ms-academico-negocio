@@ -17,7 +17,7 @@ export class Modalidad extends Entity {
   nombre: string;
 
   @hasMany(() => Solicitud, {keyTo: 'id_modalidad'})
-  solicitudes: Solicitud[];
+  tiene_una: Solicitud[];
 
   constructor(data?: Partial<Modalidad>) {
     super(data);

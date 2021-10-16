@@ -17,7 +17,7 @@ export class AreaInvestigacion extends Entity {
   nombre: string;
 
   @hasMany(() => Solicitud, {keyTo: 'id_area_investigacion'})
-  tiene_muchas: Solicitud[];
+  solicitudes: Solicitud[];
 
   constructor(data?: Partial<AreaInvestigacion>) {
     super(data);
@@ -28,4 +28,5 @@ export interface AreaInvestigacionRelations {
   // describe navigational properties here
 }
 
-export type AreaInvestigacionWithRelations = AreaInvestigacion & AreaInvestigacionRelations;
+export type AreaInvestigacionWithRelations = AreaInvestigacion &
+  AreaInvestigacionRelations;

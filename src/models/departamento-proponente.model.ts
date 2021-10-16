@@ -28,4 +28,5 @@ export interface DepartamentoProponenteRelations {
   // describe navigational properties here
 }
 
-export type DepartamentoProponenteWithRelations = DepartamentoProponente & DepartamentoProponenteRelations;
+export type DepartamentoProponenteWithRelations = DepartamentoProponente &
+  DepartamentoProponenteRelations;

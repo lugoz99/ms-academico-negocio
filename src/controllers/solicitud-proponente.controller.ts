@@ -33,6 +33,6 @@ export class SolicitudProponenteController {
   async getProponente(
     @param.path.number('id') id: typeof Solicitud.prototype.id,
   ): Promise<Proponente> {
-    return this.solicitudRepository.pertenece_A(id);
+    return this.solicitudRepository.asociado(id);
   }
 }

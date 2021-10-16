@@ -16,20 +16,20 @@ import {
   requestBody,
 } from '@loopback/rest';
 import {
-  Proponente,
+  TipoSolicitud,
   Solicitud,
 } from '../models';
-import {ProponenteRepository} from '../repositories';
+import {TipoSolicitudRepository} from '../repositories';
 
-export class ProponenteSolicitudController {
+export class TipoSolicitudSolicitudController {
   constructor(
-    @repository(ProponenteRepository) protected proponenteRepository: ProponenteRepository,
+    @repository(TipoSolicitudRepository) protected tipoSolicitudRepository: TipoSolicitudRepository,
   ) { }
 
-  @get('/proponentes/{id}/solicituds', {
+  @get('/tipo-solicituds/{id}/solicituds', {
     responses: {
       '200': {
-        description: 'Array of Proponente has many Solicitud',
+        description: 'Array of TipoSolicitud has many Solicitud',
         content: {
           'application/json': {
             schema: {type: 'array', items: getModelSchemaRef(Solicitud)},
@@ -42,38 +42,38 @@ export class ProponenteSolicitudController {
     @param.path.number('id') id: number,
     @param.query.object('filter') filter?: Filter<Solicitud>,
   ): Promise<Solicitud[]> {
-    return this.proponenteRepository.solicitudes(id).find(filter);
+    return this.tipoSolicitudRepository.relacionado(id).find(filter);
   }
 
-  @post('/proponentes/{id}/solicituds', {
+  @post('/tipo-solicituds/{id}/solicituds', {
     responses: {
       '200': {
-        description: 'Proponente model instance',
+        description: 'TipoSolicitud model instance',
         content: {'application/json': {schema: getModelSchemaRef(Solicitud)}},
       },
     },
   })
   async create(
-    @param.path.number('id') id: typeof Proponente.prototype.id,
+    @param.path.number('id') id: typeof TipoSolicitud.prototype.id,
     @requestBody({
       content: {
         'application/json': {
           schema: getModelSchemaRef(Solicitud, {
-            title: 'NewSolicitudInProponente',
+            title: 'NewSolicitudInTipoSolicitud',
             exclude: ['id'],
-            optional: ['id_proponente']
+            optional: ['id_tipo_solicitud']
           }),
         },
       },
     }) solicitud: Omit<Solicitud, 'id'>,
   ): Promise<Solicitud> {
-    return this.proponenteRepository.solicitudes(id).create(solicitud);
+    return this.tipoSolicitudRepository.relacionado(id).create(solicitud);
   }
 
-  @patch('/proponentes/{id}/solicituds', {
+  @patch('/tipo-solicituds/{id}/solicituds', {
     responses: {
       '200': {
-        description: 'Proponente.Solicitud PATCH success count',
+        description: 'TipoSolicitud.Solicitud PATCH success count',
         content: {'application/json': {schema: CountSchema}},
       },
     },
@@ -90,13 +90,13 @@ export class ProponenteSolicitudController {
     solicitud: Partial<Solicitud>,
     @param.query.object('where', getWhereSchemaFor(Solicitud)) where?: Where<Solicitud>,
   ): Promise<Count> {
-    return this.proponenteRepository.solicitudes(id).patch(solicitud, where);
+    return this.tipoSolicitudRepository.relacionado(id).patch(solicitud, where);
   }
 
-  @del('/proponentes/{id}/solicituds', {
+  @del('/tipo-solicituds/{id}/solicituds', {
     responses: {
       '200': {
-        description: 'Proponente.Solicitud DELETE success count',
+        description: 'TipoSolicitud.Solicitud DELETE success count',
         content: {'application/json': {schema: CountSchema}},
       },
     },
@@ -105,6 +105,6 @@ export class ProponenteSolicitudController {
     @param.path.number('id') id: number,
     @param.query.object('where', getWhereSchemaFor(Solicitud)) where?: Where<Solicitud>,
   ): Promise<Count> {
-    return this.proponenteRepository.solicitudes(id).delete(where);
+    return this.tipoSolicitudRepository.relacionado(id).delete(where);
   }
 }

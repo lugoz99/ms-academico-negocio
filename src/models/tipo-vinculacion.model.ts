@@ -28,4 +28,5 @@ export interface TipoVinculacionRelations {
   // describe navigational properties here
 }
 
-export type TipoVinculacionWithRelations = TipoVinculacion & TipoVinculacionRelations;
+export type TipoVinculacionWithRelations = TipoVinculacion &
+  TipoVinculacionRelations;

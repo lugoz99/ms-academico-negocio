@@ -43,7 +43,7 @@ export class SolicitudTiposComiteController {
     @param.path.number('id') id: number,
     @param.query.object('filter') filter?: Filter<TiposComite>,
   ): Promise<TiposComite[]> {
-    return this.solicitudRepository.comiteSolicitudes(id).find(filter);
+    return this.solicitudRepository.comite_solicitud(id).find(filter);
   }
 
   @post('/solicituds/{id}/tipos-comites', {
@@ -67,7 +67,7 @@ export class SolicitudTiposComiteController {
       },
     }) tiposComite: Omit<TiposComite, 'id'>,
   ): Promise<TiposComite> {
-    return this.solicitudRepository.comiteSolicitudes(id).create(tiposComite);
+    return this.solicitudRepository.comite_solicitud(id).create(tiposComite);
   }
 
   @patch('/solicituds/{id}/tipos-comites', {
@@ -90,7 +90,7 @@ export class SolicitudTiposComiteController {
     tiposComite: Partial<TiposComite>,
     @param.query.object('where', getWhereSchemaFor(TiposComite)) where?: Where<TiposComite>,
   ): Promise<Count> {
-    return this.solicitudRepository.comiteSolicitudes(id).patch(tiposComite, where);
+    return this.solicitudRepository.comite_solicitud(id).patch(tiposComite, where);
   }
 
   @del('/solicituds/{id}/tipos-comites', {
@@ -105,6 +105,6 @@ export class SolicitudTiposComiteController {
     @param.path.number('id') id: number,
     @param.query.object('where', getWhereSchemaFor(TiposComite)) where?: Where<TiposComite>,
   ): Promise<Count> {
-    return this.solicitudRepository.comiteSolicitudes(id).delete(where);
+    return this.solicitudRepository.comite_solicitud(id).delete(where);
   }
 }

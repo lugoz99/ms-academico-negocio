@@ -26,7 +26,7 @@ export class ComiteSolicitudController {
     public comiteSolicitudRepository : ComiteSolicitudRepository,
   ) {}
 
-  @post('/comite-solicitudes')
+  @post('/solicitudes-comite')
   @response(200, {
     description: 'ComiteSolicitud model instance',
     content: {'application/json': {schema: getModelSchemaRef(ComiteSolicitud)}},
@@ -47,7 +47,7 @@ export class ComiteSolicitudController {
     return this.comiteSolicitudRepository.create(comiteSolicitud);
   }
 
-  @get('/comite-solicitudes/count')
+  @get('/solicitudes-comite/count')
   @response(200, {
     description: 'ComiteSolicitud model count',
     content: {'application/json': {schema: CountSchema}},
@@ -58,7 +58,7 @@ export class ComiteSolicitudController {
     return this.comiteSolicitudRepository.count(where);
   }
 
-  @get('/comite-solicitudes')
+  @get('/solicitudes-comite')
   @response(200, {
     description: 'Array of ComiteSolicitud model instances',
     content: {
@@ -76,7 +76,7 @@ export class ComiteSolicitudController {
     return this.comiteSolicitudRepository.find(filter);
   }
 
-  @patch('/comite-solicitudes')
+  @patch('/solicitudes-comite')
   @response(200, {
     description: 'ComiteSolicitud PATCH success count',
     content: {'application/json': {schema: CountSchema}},
@@ -95,7 +95,7 @@ export class ComiteSolicitudController {
     return this.comiteSolicitudRepository.updateAll(comiteSolicitud, where);
   }
 
-  @get('/comite-solicitudes/{id}')
+  @get('/solicitudes-comite/{id}')
   @response(200, {
     description: 'ComiteSolicitud model instance',
     content: {
@@ -111,7 +111,7 @@ export class ComiteSolicitudController {
     return this.comiteSolicitudRepository.findById(id, filter);
   }
 
-  @patch('/comite-solicitudes/{id}')
+  @patch('/solicitudes-comite/{id}')
   @response(204, {
     description: 'ComiteSolicitud PATCH success',
   })
@@ -129,7 +129,7 @@ export class ComiteSolicitudController {
     await this.comiteSolicitudRepository.updateById(id, comiteSolicitud);
   }
 
-  @put('/comite-solicitudes/{id}')
+  @put('/solicitudes-comite/{id}')
   @response(204, {
     description: 'ComiteSolicitud PUT success',
   })
@@ -140,7 +140,7 @@ export class ComiteSolicitudController {
     await this.comiteSolicitudRepository.replaceById(id, comiteSolicitud);
   }
 
-  @del('/comite-solicitudes/{id}')
+  @del('/solicitudes-comite/{id}')
   @response(204, {
     description: 'ComiteSolicitud DELETE success',
   })

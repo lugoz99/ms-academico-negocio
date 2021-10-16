@@ -1,18 +1,7 @@
-import {
-  belongsTo,
-  Entity,
-  hasMany,
-  model,
-  property,
-} from '@loopback/repository';
-import {Modalidad} from './modalidad.model';
-import {TipoSolicitud} from './tipo-solicitud.model';
+import {Entity, model, property, belongsTo, hasMany} from '@loopback/repository';
 import {Proponente} from './proponente.model';
 import {TiposComite} from './tipos-comite.model';
 import {ComiteSolicitud} from './comite-solicitud.model';
-import {AreaInvestigacion} from './area-investigacion.model';
-import {EvaluacionSolicitud} from './evaluacion-solicitud.model';
-import {Recordatorio} from './recordatorio.model';
 
 @model()
 export class Solicitud extends Entity {
@@ -47,29 +36,26 @@ export class Solicitud extends Entity {
   })
   descripcion: string;
 
-  @belongsTo(() => TipoSolicitud, {name: 'gestiona'})
-  id_tipo_solicitud: number;
-
-  @hasMany(() => TipoSolicitud, {keyTo: 'id_tipo_solicitud'})
-  tiposSolicitud: TipoSolicitud[];
-
-  @belongsTo(() => Modalidad, {name: 'genera'})
-  id_modalidad: number;
-
-  @belongsTo(() => Proponente, {name: 'pertenece_A'})
+  @belongsTo(() => Proponente, {name: 'asociado'})
   id_proponente: number;
 
+  @property({
+    type: 'number',
+  })
+  id_area_investigacion?: number;
+
+  @property({
+    type: 'number',
+  })
+  id_tipo_solicitud?: number;
+
+  @property({
+    type: 'number',
+  })
+  id_modalidad?: number;
+
   @hasMany(() => TiposComite, {through: {model: () => ComiteSolicitud, keyFrom: 'id_solicitud', keyTo: 'id_comite'}})
-  comiteSolicitudes: TiposComite[];
-
-  @belongsTo(() => AreaInvestigacion, {name: 'asocia'})
-  id_area_investigacion: number;
-
-  @hasMany(() => EvaluacionSolicitud, {keyTo: 'id_solicitud'})
-  evaluacionSolicitudes: EvaluacionSolicitud[];
-
-  @hasMany(() => Recordatorio, {keyTo: 'id_solicitud'})
-  recordatorios: Recordatorio[];
+  comite_solicitud: TiposComite[];
 
   constructor(data?: Partial<Solicitud>) {
     super(data);

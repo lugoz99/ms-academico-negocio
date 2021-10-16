@@ -34,4 +34,5 @@ export interface ComiteSolicitudRelations {
   // describe navigational properties here
 }
 
-export type ComiteSolicitudWithRelations = ComiteSolicitud & ComiteSolicitudRelations;
+export type ComiteSolicitudWithRelations = ComiteSolicitud &
+  ComiteSolicitudRelations;

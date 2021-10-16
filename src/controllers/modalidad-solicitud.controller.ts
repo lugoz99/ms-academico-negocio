@@ -42,7 +42,7 @@ export class ModalidadSolicitudController {
     @param.path.number('id') id: number,
     @param.query.object('filter') filter?: Filter<Solicitud>,
   ): Promise<Solicitud[]> {
-    return this.modalidadRepository.solicitudes(id).find(filter);
+    return this.modalidadRepository.tiene_una(id).find(filter);
   }
 
   @post('/modalidads/{id}/solicituds', {
@@ -67,7 +67,7 @@ export class ModalidadSolicitudController {
       },
     }) solicitud: Omit<Solicitud, 'id'>,
   ): Promise<Solicitud> {
-    return this.modalidadRepository.solicitudes(id).create(solicitud);
+    return this.modalidadRepository.tiene_una(id).create(solicitud);
   }
 
   @patch('/modalidads/{id}/solicituds', {
@@ -90,7 +90,7 @@ export class ModalidadSolicitudController {
     solicitud: Partial<Solicitud>,
     @param.query.object('where', getWhereSchemaFor(Solicitud)) where?: Where<Solicitud>,
   ): Promise<Count> {
-    return this.modalidadRepository.solicitudes(id).patch(solicitud, where);
+    return this.modalidadRepository.tiene_una(id).patch(solicitud, where);
   }
 
   @del('/modalidads/{id}/solicituds', {
@@ -105,6 +105,6 @@ export class ModalidadSolicitudController {
     @param.path.number('id') id: number,
     @param.query.object('where', getWhereSchemaFor(Solicitud)) where?: Where<Solicitud>,
   ): Promise<Count> {
-    return this.modalidadRepository.solicitudes(id).delete(where);
+    return this.modalidadRepository.tiene_una(id).delete(where);
   }
 }

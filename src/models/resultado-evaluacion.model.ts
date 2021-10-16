@@ -22,7 +22,7 @@ export class ResultadoEvaluacion extends Entity {
   })
   formato_diligenciado: string;
 
-  @belongsTo(() => EvaluacionSolicitud, {name: 'resultado'})
+  @belongsTo(() => EvaluacionSolicitud, {name: 'evaluacion'})
   id_evaluacionSolicitud: number;
 
   constructor(data?: Partial<ResultadoEvaluacion>) {
@@ -34,4 +34,5 @@ export interface ResultadoEvaluacionRelations {
   // describe navigational properties here
 }
 
-export type ResultadoEvaluacionWithRelations = ResultadoEvaluacion & ResultadoEvaluacionRelations;
+export type ResultadoEvaluacionWithRelations = ResultadoEvaluacion &
+  ResultadoEvaluacionRelations;

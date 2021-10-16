@@ -43,7 +43,7 @@ export class JuradoAreaInvestigacionController {
     @param.path.number('id') id: number,
     @param.query.object('filter') filter?: Filter<AreaInvestigacion>,
   ): Promise<AreaInvestigacion[]> {
-    return this.juradoRepository.juradosInvestigacion(id).find(filter);
+    return this.juradoRepository.juradosInvestigaciones(id).find(filter);
   }
 
   @post('/jurados/{id}/area-investigacions', {
@@ -67,7 +67,7 @@ export class JuradoAreaInvestigacionController {
       },
     }) areaInvestigacion: Omit<AreaInvestigacion, 'id'>,
   ): Promise<AreaInvestigacion> {
-    return this.juradoRepository.juradosInvestigacion(id).create(areaInvestigacion);
+    return this.juradoRepository.juradosInvestigaciones(id).create(areaInvestigacion);
   }
 
   @patch('/jurados/{id}/area-investigacions', {
@@ -90,7 +90,7 @@ export class JuradoAreaInvestigacionController {
     areaInvestigacion: Partial<AreaInvestigacion>,
     @param.query.object('where', getWhereSchemaFor(AreaInvestigacion)) where?: Where<AreaInvestigacion>,
   ): Promise<Count> {
-    return this.juradoRepository.juradosInvestigacion(id).patch(areaInvestigacion, where);
+    return this.juradoRepository.juradosInvestigaciones(id).patch(areaInvestigacion, where);
   }
 
   @del('/jurados/{id}/area-investigacions', {
@@ -105,6 +105,6 @@ export class JuradoAreaInvestigacionController {
     @param.path.number('id') id: number,
     @param.query.object('where', getWhereSchemaFor(AreaInvestigacion)) where?: Where<AreaInvestigacion>,
   ): Promise<Count> {
-    return this.juradoRepository.juradosInvestigacion(id).delete(where);
+    return this.juradoRepository.juradosInvestigaciones(id).delete(where);
   }
 }

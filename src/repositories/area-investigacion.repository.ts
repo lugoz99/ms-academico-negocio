@@ -10,13 +10,13 @@ export class AreaInvestigacionRepository extends DefaultCrudRepository<
   AreaInvestigacionRelations
 > {
 
-  public readonly tiene_muchas: HasManyRepositoryFactory<Solicitud, typeof AreaInvestigacion.prototype.id>;
+  public readonly solicitudes: HasManyRepositoryFactory<Solicitud, typeof AreaInvestigacion.prototype.id>;
 
   constructor(
     @inject('datasources.mysql') dataSource: MysqlDataSource, @repository.getter('SolicitudRepository') protected solicitudRepositoryGetter: Getter<SolicitudRepository>,
   ) {
     super(AreaInvestigacion, dataSource);
-    this.tiene_muchas = this.createHasManyRepositoryFactoryFor('tiene_muchas', solicitudRepositoryGetter,);
-    this.registerInclusionResolver('tiene_muchas', this.tiene_muchas.inclusionResolver);
+    this.solicitudes = this.createHasManyRepositoryFactoryFor('solicitudes', solicitudRepositoryGetter,);
+    this.registerInclusionResolver('solicitudes', this.solicitudes.inclusionResolver);
   }
 }

@@ -42,7 +42,7 @@ export class AreaInvestigacionSolicitudController {
     @param.path.number('id') id: number,
     @param.query.object('filter') filter?: Filter<Solicitud>,
   ): Promise<Solicitud[]> {
-    return this.areaInvestigacionRepository.tiene_muchas(id).find(filter);
+    return this.areaInvestigacionRepository.solicitudes(id).find(filter);
   }
 
   @post('/area-investigacions/{id}/solicituds', {
@@ -67,7 +67,7 @@ export class AreaInvestigacionSolicitudController {
       },
     }) solicitud: Omit<Solicitud, 'id'>,
   ): Promise<Solicitud> {
-    return this.areaInvestigacionRepository.tiene_muchas(id).create(solicitud);
+    return this.areaInvestigacionRepository.solicitudes(id).create(solicitud);
   }
 
   @patch('/area-investigacions/{id}/solicituds', {
@@ -90,7 +90,7 @@ export class AreaInvestigacionSolicitudController {
     solicitud: Partial<Solicitud>,
     @param.query.object('where', getWhereSchemaFor(Solicitud)) where?: Where<Solicitud>,
   ): Promise<Count> {
-    return this.areaInvestigacionRepository.tiene_muchas(id).patch(solicitud, where);
+    return this.areaInvestigacionRepository.solicitudes(id).patch(solicitud, where);
   }
 
   @del('/area-investigacions/{id}/solicituds', {
@@ -105,6 +105,6 @@ export class AreaInvestigacionSolicitudController {
     @param.path.number('id') id: number,
     @param.query.object('where', getWhereSchemaFor(Solicitud)) where?: Where<Solicitud>,
   ): Promise<Count> {
-    return this.areaInvestigacionRepository.tiene_muchas(id).delete(where);
+    return this.areaInvestigacionRepository.solicitudes(id).delete(where);
   }
 }

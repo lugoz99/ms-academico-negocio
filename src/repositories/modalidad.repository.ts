@@ -10,13 +10,13 @@ export class ModalidadRepository extends DefaultCrudRepository<
   ModalidadRelations
 > {
 
-  public readonly solicitudes: HasManyRepositoryFactory<Solicitud, typeof Modalidad.prototype.id>;
+  public readonly tiene_una: HasManyRepositoryFactory<Solicitud, typeof Modalidad.prototype.id>;
 
   constructor(
     @inject('datasources.mysql') dataSource: MysqlDataSource, @repository.getter('SolicitudRepository') protected solicitudRepositoryGetter: Getter<SolicitudRepository>,
   ) {
     super(Modalidad, dataSource);
-    this.solicitudes = this.createHasManyRepositoryFactoryFor('solicitudes', solicitudRepositoryGetter,);
-    this.registerInclusionResolver('solicitudes', this.solicitudes.inclusionResolver);
+    this.tiene_una = this.createHasManyRepositoryFactoryFor('tiene_una', solicitudRepositoryGetter,);
+    this.registerInclusionResolver('tiene_una', this.tiene_una.inclusionResolver);
   }
 }

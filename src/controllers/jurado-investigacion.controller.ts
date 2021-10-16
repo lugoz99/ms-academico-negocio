@@ -20,7 +20,7 @@ import {
 import {JuradoInvestigacion} from '../models';
 import {JuradoInvestigacionRepository} from '../repositories';
 
-export class JuradosInvestigacionController {
+export class JuradoInvestigacionController {
   constructor(
     @repository(JuradoInvestigacionRepository)
     public juradoInvestigacionRepository : JuradoInvestigacionRepository,

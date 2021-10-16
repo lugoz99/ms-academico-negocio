@@ -17,7 +17,7 @@ export class JuradoInvestigacion extends Entity {
   @property({
     type: 'number',
   })
-  id_area_investigacion?: number;
+  id_investigacion?: number;
 
   constructor(data?: Partial<JuradoInvestigacion>) {
     super(data);
@@ -28,4 +28,5 @@ export interface JuradoInvestigacionRelations {
   // describe navigational properties here
 }
 
-export type JuradoInvestigacionWithRelations = JuradoInvestigacion & JuradoInvestigacionRelations;
+export type JuradoInvestigacionWithRelations = JuradoInvestigacion &
+  JuradoInvestigacionRelations;
