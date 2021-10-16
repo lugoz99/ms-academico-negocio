@@ -1,8 +1,19 @@
-import {Entity, model, property, hasMany} from '@loopback/repository';
-import {Departamento} from './departamento.model';
+import {Entity, hasMany, model, property} from '@loopback/repository';
 import {DepartamentoProponente} from './departamento-proponente.model';
+import {Departamento} from './departamento.model';
 
-@model()
+@model({
+  settings: {
+    foreignKeys: {
+      fk_proponente_id_tipo_vinculacion: {
+        name: 'fk_proponente_id_tipo_vinculacion',
+        entity: 'TipoVinculacion',
+        entityKey: 'id',
+        foreignKey: 'id_tipo_vinculacion',
+      },
+    },
+  },
+})
 export class Proponente extends Entity {
   @property({
     type: 'number',
@@ -62,7 +73,13 @@ export class Proponente extends Entity {
   })
   id_tipo_vinculacion?: number;
 
-  @hasMany(() => Departamento, {through: {model: () => DepartamentoProponente, keyFrom: 'id_proponente', keyTo: 'id_departamento'}})
+  @hasMany(() => Departamento, {
+    through: {
+      model: () => DepartamentoProponente,
+      keyFrom: 'id_proponente',
+      keyTo: 'id_departamento',
+    },
+  })
   departamentosProponentes: Departamento[];
 
   constructor(data?: Partial<Proponente>) {
