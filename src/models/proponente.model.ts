@@ -64,9 +64,9 @@ export class Proponente extends Entity {
   celular?: string;
 
   @property({
-    type: 'buffer',
+    type: 'string',
   })
-  foto?: Buffer;
+  foto?: string;
 
   @property({
     type: 'number',

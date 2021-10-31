@@ -1,4 +1,4 @@
-import {Entity, model, property, hasMany} from '@loopback/repository';
+import {Entity, hasMany, model, property} from '@loopback/repository';
 import {Solicitud} from './solicitud.model';
 
 @model()
@@ -15,6 +15,12 @@ export class TipoSolicitud extends Entity {
     required: true,
   })
   nombre: string;
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  formato: string;
 
   @hasMany(() => Solicitud, {keyTo: 'id_tipo_solicitud'})
   relacionado: Solicitud[];

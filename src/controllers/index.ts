@@ -29,3 +29,5 @@ export * from './tipo-solicitud.controller';
 export * from './tipo-vinculacion-proponente.controller';
 export * from './tipo-vinculacion.controller';
 export * from './usuario-jurado.controller';
+export * from './carga-archivos.controller';
+export * from './descarga-archivos.controller';
