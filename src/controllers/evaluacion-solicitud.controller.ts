@@ -1,3 +1,4 @@
+import {authenticate} from '@loopback/authentication';
 import {
   Count,
   CountSchema,
@@ -7,13 +8,13 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
   response,
 } from '@loopback/rest';
@@ -23,13 +24,15 @@ import {EvaluacionSolicitudRepository} from '../repositories';
 export class EvaluacionSolicitudController {
   constructor(
     @repository(EvaluacionSolicitudRepository)
-    public evaluacionSolicitudRepository : EvaluacionSolicitudRepository,
+    public evaluacionSolicitudRepository: EvaluacionSolicitudRepository,
   ) {}
-
+  @authenticate('admin')
   @post('/evaluacion-solicitudes')
   @response(200, {
     description: 'EvaluacionSolicitud model instance',
-    content: {'application/json': {schema: getModelSchemaRef(EvaluacionSolicitud)}},
+    content: {
+      'application/json': {schema: getModelSchemaRef(EvaluacionSolicitud)},
+    },
   })
   async create(
     @requestBody({
@@ -65,7 +68,9 @@ export class EvaluacionSolicitudController {
       'application/json': {
         schema: {
           type: 'array',
-          items: getModelSchemaRef(EvaluacionSolicitud, {includeRelations: true}),
+          items: getModelSchemaRef(EvaluacionSolicitud, {
+            includeRelations: true,
+          }),
         },
       },
     },
@@ -92,7 +97,10 @@ export class EvaluacionSolicitudController {
     evaluacionSolicitud: EvaluacionSolicitud,
     @param.where(EvaluacionSolicitud) where?: Where<EvaluacionSolicitud>,
   ): Promise<Count> {
-    return this.evaluacionSolicitudRepository.updateAll(evaluacionSolicitud, where);
+    return this.evaluacionSolicitudRepository.updateAll(
+      evaluacionSolicitud,
+      where,
+    );
   }
 
   @get('/evaluacion-solicitudes/{id}')
@@ -100,13 +108,16 @@ export class EvaluacionSolicitudController {
     description: 'EvaluacionSolicitud model instance',
     content: {
       'application/json': {
-        schema: getModelSchemaRef(EvaluacionSolicitud, {includeRelations: true}),
+        schema: getModelSchemaRef(EvaluacionSolicitud, {
+          includeRelations: true,
+        }),
       },
     },
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(EvaluacionSolicitud, {exclude: 'where'}) filter?: FilterExcludingWhere<EvaluacionSolicitud>
+    @param.filter(EvaluacionSolicitud, {exclude: 'where'})
+    filter?: FilterExcludingWhere<EvaluacionSolicitud>,
   ): Promise<EvaluacionSolicitud> {
     return this.evaluacionSolicitudRepository.findById(id, filter);
   }
@@ -126,7 +137,10 @@ export class EvaluacionSolicitudController {
     })
     evaluacionSolicitud: EvaluacionSolicitud,
   ): Promise<void> {
-    await this.evaluacionSolicitudRepository.updateById(id, evaluacionSolicitud);
+    await this.evaluacionSolicitudRepository.updateById(
+      id,
+      evaluacionSolicitud,
+    );
   }
 
   @put('/evaluacion-solicitudes/{id}')
@@ -137,7 +151,10 @@ export class EvaluacionSolicitudController {
     @param.path.number('id') id: number,
     @requestBody() evaluacionSolicitud: EvaluacionSolicitud,
   ): Promise<void> {
-    await this.evaluacionSolicitudRepository.replaceById(id, evaluacionSolicitud);
+    await this.evaluacionSolicitudRepository.replaceById(
+      id,
+      evaluacionSolicitud,
+    );
   }
 
   @del('/evaluacion-solicitudes/{id}')

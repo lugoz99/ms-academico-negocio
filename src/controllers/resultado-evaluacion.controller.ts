@@ -1,3 +1,4 @@
+import {authenticate} from '@loopback/authentication';
 import {
   Count,
   CountSchema,
@@ -7,29 +8,31 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
   response,
 } from '@loopback/rest';
 import {ResultadoEvaluacion} from '../models';
 import {ResultadoEvaluacionRepository} from '../repositories';
-
+@authenticate('admin')
 export class ResultadoEvaluacionController {
   constructor(
     @repository(ResultadoEvaluacionRepository)
-    public resultadoEvaluacionRepository : ResultadoEvaluacionRepository,
+    public resultadoEvaluacionRepository: ResultadoEvaluacionRepository,
   ) {}
 
   @post('/resultado-evaluaciones')
   @response(200, {
     description: 'ResultadoEvaluacion model instance',
-    content: {'application/json': {schema: getModelSchemaRef(ResultadoEvaluacion)}},
+    content: {
+      'application/json': {schema: getModelSchemaRef(ResultadoEvaluacion)},
+    },
   })
   async create(
     @requestBody({
@@ -65,7 +68,9 @@ export class ResultadoEvaluacionController {
       'application/json': {
         schema: {
           type: 'array',
-          items: getModelSchemaRef(ResultadoEvaluacion, {includeRelations: true}),
+          items: getModelSchemaRef(ResultadoEvaluacion, {
+            includeRelations: true,
+          }),
         },
       },
     },
@@ -92,7 +97,10 @@ export class ResultadoEvaluacionController {
     resultadoEvaluacion: ResultadoEvaluacion,
     @param.where(ResultadoEvaluacion) where?: Where<ResultadoEvaluacion>,
   ): Promise<Count> {
-    return this.resultadoEvaluacionRepository.updateAll(resultadoEvaluacion, where);
+    return this.resultadoEvaluacionRepository.updateAll(
+      resultadoEvaluacion,
+      where,
+    );
   }
 
   @get('/resultado-evaluaciones/{id}')
@@ -100,13 +108,16 @@ export class ResultadoEvaluacionController {
     description: 'ResultadoEvaluacion model instance',
     content: {
       'application/json': {
-        schema: getModelSchemaRef(ResultadoEvaluacion, {includeRelations: true}),
+        schema: getModelSchemaRef(ResultadoEvaluacion, {
+          includeRelations: true,
+        }),
       },
     },
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(ResultadoEvaluacion, {exclude: 'where'}) filter?: FilterExcludingWhere<ResultadoEvaluacion>
+    @param.filter(ResultadoEvaluacion, {exclude: 'where'})
+    filter?: FilterExcludingWhere<ResultadoEvaluacion>,
   ): Promise<ResultadoEvaluacion> {
     return this.resultadoEvaluacionRepository.findById(id, filter);
   }
@@ -126,7 +137,10 @@ export class ResultadoEvaluacionController {
     })
     resultadoEvaluacion: ResultadoEvaluacion,
   ): Promise<void> {
-    await this.resultadoEvaluacionRepository.updateById(id, resultadoEvaluacion);
+    await this.resultadoEvaluacionRepository.updateById(
+      id,
+      resultadoEvaluacion,
+    );
   }
 
   @put('/resultado-evaluaciones/{id}')
@@ -137,7 +151,10 @@ export class ResultadoEvaluacionController {
     @param.path.number('id') id: number,
     @requestBody() resultadoEvaluacion: ResultadoEvaluacion,
   ): Promise<void> {
-    await this.resultadoEvaluacionRepository.replaceById(id, resultadoEvaluacion);
+    await this.resultadoEvaluacionRepository.replaceById(
+      id,
+      resultadoEvaluacion,
+    );
   }
 
   @del('/resultado-evaluaciones/{id}')

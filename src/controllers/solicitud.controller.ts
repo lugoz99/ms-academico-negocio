@@ -1,3 +1,4 @@
+import {authenticate} from '@loopback/authentication';
 import {
   Count,
   CountSchema,
@@ -7,25 +8,26 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
   response,
 } from '@loopback/rest';
 import {Solicitud} from '../models';
 import {SolicitudRepository} from '../repositories';
-
+@authenticate('admin')
 export class SolicitudController {
   constructor(
     @repository(SolicitudRepository)
-    public solicitudRepository : SolicitudRepository,
+    public solicitudRepository: SolicitudRepository,
   ) {}
-
+  //@authenticate('admin')
+  @authenticate.skip()
   @post('/solicitudes')
   @response(200, {
     description: 'Solicitud model instance',
@@ -46,7 +48,7 @@ export class SolicitudController {
   ): Promise<Solicitud> {
     return this.solicitudRepository.create(solicitud);
   }
-
+  @authenticate.skip()
   @get('/solicitudes/count')
   @response(200, {
     description: 'Solicitud model count',
@@ -106,7 +108,8 @@ export class SolicitudController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(Solicitud, {exclude: 'where'}) filter?: FilterExcludingWhere<Solicitud>
+    @param.filter(Solicitud, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Solicitud>,
   ): Promise<Solicitud> {
     return this.solicitudRepository.findById(id, filter);
   }
