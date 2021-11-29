@@ -36,9 +36,8 @@ export class Proponente extends Entity {
 
   @property({
     type: 'string',
-    required: true,
   })
-  otrosNombres: string;
+  otrosNombres?: string;
 
   @property({
     type: 'string',

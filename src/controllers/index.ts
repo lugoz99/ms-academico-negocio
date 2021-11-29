@@ -31,3 +31,5 @@ export * from './tipo-vinculacion.controller';
 export * from './usuario-jurado.controller';
 export * from './carga-archivos.controller';
 export * from './descarga-archivos.controller';
+export * from './departamento-facultad.controller';
+export * from './correo-notificacion.controller';

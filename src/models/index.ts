@@ -15,3 +15,4 @@ export * from './tipo-solicitud.model';
 export * from './tipo-vinculacion.model';
 export * from './tipos-comite.model';
 export * from './usuario-jurado.model';
+export * from './correo-notificacion.model';

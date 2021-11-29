@@ -1,3 +1,4 @@
+import {authenticate} from '@loopback/authentication';
 import {
   Count,
   CountSchema,
@@ -7,25 +8,25 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
   response,
 } from '@loopback/rest';
 import {Modalidad} from '../models';
 import {ModalidadRepository} from '../repositories';
-
+@authenticate('admin')
 export class ModalidadController {
   constructor(
     @repository(ModalidadRepository)
-    public modalidadRepository : ModalidadRepository,
+    public modalidadRepository: ModalidadRepository,
   ) {}
-
+  //@authenticate.skip()
   @post('/modalidades')
   @response(200, {
     description: 'Modalidad model instance',
@@ -46,7 +47,7 @@ export class ModalidadController {
   ): Promise<Modalidad> {
     return this.modalidadRepository.create(modalidad);
   }
-
+  @authenticate.skip()
   @get('/modalidades/count')
   @response(200, {
     description: 'Modalidad model count',
@@ -57,7 +58,7 @@ export class ModalidadController {
   ): Promise<Count> {
     return this.modalidadRepository.count(where);
   }
-
+  @authenticate.skip()
   @get('/modalidades')
   @response(200, {
     description: 'Array of Modalidad model instances',
@@ -94,7 +95,7 @@ export class ModalidadController {
   ): Promise<Count> {
     return this.modalidadRepository.updateAll(modalidad, where);
   }
-
+  @authenticate.skip()
   @get('/modalidades/{id}')
   @response(200, {
     description: 'Modalidad model instance',
@@ -106,7 +107,8 @@ export class ModalidadController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(Modalidad, {exclude: 'where'}) filter?: FilterExcludingWhere<Modalidad>
+    @param.filter(Modalidad, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Modalidad>,
   ): Promise<Modalidad> {
     return this.modalidadRepository.findById(id, filter);
   }

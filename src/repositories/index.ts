@@ -15,3 +15,4 @@ export * from './tipo-solicitud.repository';
 export * from './tipo-vinculacion.repository';
 export * from './tipos-comite.repository';
 export * from './usuario-jurado.repository';
+export * from './correo-notificacion.repository';

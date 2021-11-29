@@ -1,6 +1,8 @@
 import {inject} from '@loopback/core';
+import {repository} from '@loopback/repository';
 import {
   HttpErrors,
+  param,
   post,
   Request,
   requestBody,
@@ -10,14 +12,28 @@ import {
 import multer from 'multer';
 import path from 'path';
 import {Keys as llaves} from '../config/keys';
+import {Proponente, Solicitud, TipoSolicitud} from '../models';
+import {
+  ProponenteRepository,
+  SolicitudRepository,
+  TipoSolicitudRepository,
+} from '../repositories';
 
 export class CargaArchivoController {
-  constructor() {}
+  constructor(
+    @repository(SolicitudRepository)
+    private solicitudArchivo: SolicitudRepository,
+    @repository(ProponenteRepository)
+    private proponente: ProponenteRepository,
+    @repository(TipoSolicitudRepository)
+    private tipoSolicitud: TipoSolicitudRepository,
+  ) {}
 
   /**
    *
    * @param response
    * @param request
+   * @param id_Proponente
    */
   @post('/CargarImagenProponente', {
     responses: {
@@ -33,8 +49,9 @@ export class CargaArchivoController {
       },
     },
   })
-  async personcargarImagenDelProponente(
+  async cargarImagenDelProponente(
     @inject(RestBindings.Http.RESPONSE) response: Response,
+    @param.query.number('id_Proponente') id_proponente: number,
     @requestBody.file() request: Request,
   ): Promise<object | false> {
     const rutaImagenPersona = path.join(
@@ -48,9 +65,15 @@ export class CargaArchivoController {
       response,
       llaves.extensionesPermitidasIMG,
     );
+
     if (res) {
       const nombre_archivo = response.req?.file?.filename;
       if (nombre_archivo) {
+        let p: Proponente = await this.proponente.findById(id_proponente);
+        if (p) {
+          p.foto = nombre_archivo;
+          this.proponente.replaceById(id_proponente, p);
+        }
         return {filename: nombre_archivo};
       }
     }
@@ -61,8 +84,9 @@ export class CargaArchivoController {
    *
    * @param response
    * @param request
+   * @param id_solicitud
    */
-  @post('/CargarDocumentoPersona', {
+  @post('/CargarDocumentoSolicitud', {
     responses: {
       200: {
         content: {
@@ -76,17 +100,18 @@ export class CargaArchivoController {
       },
     },
   })
-  async DocumentosPersona(
+  async DocumentosSolictud(
     @inject(RestBindings.Http.RESPONSE) response: Response,
     @requestBody.file() request: Request,
+    @param.query.number('id_solicitud') id: number,
   ): Promise<object | false> {
     const rutaDocumentoPersona = path.join(
       __dirname,
-      llaves.carpetaDocumentoPersona,
+      llaves.carpetaArchivoSolicitud,
     );
     let res = await this.StoreFileToPath(
       rutaDocumentoPersona,
-      llaves.nombreCampoDocumentoPersona,
+      llaves.nombreCampoArchivoSolicitud,
       request,
       response,
       llaves.extensionesPermitidasDOC,
@@ -94,7 +119,61 @@ export class CargaArchivoController {
     if (res) {
       const nombre_archivo = response.req?.file?.filename;
       if (nombre_archivo) {
-        return {filename: nombre_archivo};
+        const s: Solicitud = await this.solicitudArchivo.findById(id);
+        if (s) {
+          s.archivo = nombre_archivo;
+          this.solicitudArchivo.replaceById(id, s);
+          return {filename: nombre_archivo};
+        }
+      }
+    }
+    return res;
+  }
+  @post('/CargarFormatoSolicitud', {
+    responses: {
+      200: {
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+            },
+          },
+        },
+        description: 'Función de carga de formato tipo solictud.',
+      },
+    },
+  })
+  /**
+   *
+   * @param response
+   * @param request
+   * @param id_tipoSolicitud
+   */
+  async DocumentosFormatoSolictud(
+    @inject(RestBindings.Http.RESPONSE) response: Response,
+    @requestBody.file() request: Request,
+    @param.query.number('id_tipoSolicitud') id: number,
+  ): Promise<object | false> {
+    const rutaDocumentoPersona = path.join(
+      __dirname,
+      llaves.carpetaFormatoSolicitud,
+    );
+    let res = await this.StoreFileToPath(
+      rutaDocumentoPersona,
+      llaves.nombreFormatoArchivoSolicitud,
+      request,
+      response,
+      llaves.extensionesPermitidasDOC,
+    );
+    if (res) {
+      const nombre_archivo = response.req?.file?.filename;
+      if (nombre_archivo) {
+        const s: TipoSolicitud = await this.tipoSolicitud.findById(id);
+        if (s) {
+          s.formato = nombre_archivo;
+          this.tipoSolicitud.replaceById(id, s);
+          return {filename: nombre_archivo};
+        }
       }
     }
     return res;

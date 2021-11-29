@@ -11,7 +11,9 @@ export class AdministradorStrategy implements AuthenticationStrategy {
     let token = parseBearerToken(request);
     if (token) {
       let rol_admin = Keys.rol_administrador;
-      let url_token = `${Keys.url_validar_token}?${Keys.arg_token}=${token}&${Keys.arg_rol_token}=${Keys.rol_administrador}`;
+      //let url_token = `${Keys.url_validar_token}?${Keys.arg_token}=${token}&${Keys.arg_rol_token}=${Keys.rol_administrador}`;
+      let url_token = `${Keys.url_validar_token}?${Keys.arg_token}=${token}`;
+      console.log(url_token);
       let r = '';
       await fetch(url_token).then(async (res: any) => {
         r = await res.text();
@@ -23,6 +25,7 @@ export class AdministradorStrategy implements AuthenticationStrategy {
           let perfil: UserProfile = Object.assign({
             admin: 'OK',
           });
+          console.log('OK : ', perfil);
           return perfil;
           break;
         case 'KO':

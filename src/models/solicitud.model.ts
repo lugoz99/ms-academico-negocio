@@ -61,15 +61,21 @@ export class Solicitud extends Entity {
 
   @property({
     type: 'string',
-    required: true,
+    required: false,
   })
-  archivo: string;
+  archivo?: string;
 
   @property({
     type: 'string',
     required: true,
   })
   descripcion: string;
+
+  @property({
+    type: 'number',
+    required: false,
+  })
+  estado?: number;
 
   @belongsTo(() => Proponente, {name: 'asociado'})
   id_proponente: number;

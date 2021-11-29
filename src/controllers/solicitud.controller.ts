@@ -1,4 +1,3 @@
-import {authenticate} from '@loopback/authentication';
 import {
   Count,
   CountSchema,
@@ -20,14 +19,14 @@ import {
 } from '@loopback/rest';
 import {Solicitud} from '../models';
 import {SolicitudRepository} from '../repositories';
-@authenticate('admin')
+
 export class SolicitudController {
   constructor(
     @repository(SolicitudRepository)
     public solicitudRepository: SolicitudRepository,
   ) {}
   //@authenticate('admin')
-  @authenticate.skip()
+
   @post('/solicitudes')
   @response(200, {
     description: 'Solicitud model instance',
@@ -48,7 +47,7 @@ export class SolicitudController {
   ): Promise<Solicitud> {
     return this.solicitudRepository.create(solicitud);
   }
-  @authenticate.skip()
+
   @get('/solicitudes/count')
   @response(200, {
     description: 'Solicitud model count',

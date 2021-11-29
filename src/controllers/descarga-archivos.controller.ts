@@ -79,11 +79,15 @@ export class DescargaArchivosController {
     switch (type) {
       case 1:
         // donde esta ubicada la req
-        ruta = path.join(__dirname, llaves.carpetaDocumentoPersona);
+        ruta = path.join(__dirname, llaves.carpetaArchivoSolicitud);
         break;
 
       case 2:
         ruta = path.join(__dirname, llaves.carpetaImagenProponente);
+        break;
+      case 3:
+        ruta = path.join(__dirname, llaves.carpetaFormatoSolicitud);
+        break;
     }
     return ruta;
   }
