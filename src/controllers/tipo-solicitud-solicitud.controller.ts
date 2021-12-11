@@ -15,16 +15,14 @@ import {
   post,
   requestBody,
 } from '@loopback/rest';
-import {
-  TipoSolicitud,
-  Solicitud,
-} from '../models';
+import {Solicitud, TipoSolicitud} from '../models';
 import {TipoSolicitudRepository} from '../repositories';
 
 export class TipoSolicitudSolicitudController {
   constructor(
-    @repository(TipoSolicitudRepository) protected tipoSolicitudRepository: TipoSolicitudRepository,
-  ) { }
+    @repository(TipoSolicitudRepository)
+    protected tipoSolicitudRepository: TipoSolicitudRepository,
+  ) {}
 
   @get('/tipo-solicituds/{id}/solicituds', {
     responses: {
@@ -61,11 +59,11 @@ export class TipoSolicitudSolicitudController {
           schema: getModelSchemaRef(Solicitud, {
             title: 'NewSolicitudInTipoSolicitud',
             exclude: ['id'],
-            optional: ['id_tipo_solicitud']
           }),
         },
       },
-    }) solicitud: Omit<Solicitud, 'id'>,
+    })
+    solicitud: Omit<Solicitud, 'id'>,
   ): Promise<Solicitud> {
     return this.tipoSolicitudRepository.relacionado(id).create(solicitud);
   }
@@ -88,7 +86,8 @@ export class TipoSolicitudSolicitudController {
       },
     })
     solicitud: Partial<Solicitud>,
-    @param.query.object('where', getWhereSchemaFor(Solicitud)) where?: Where<Solicitud>,
+    @param.query.object('where', getWhereSchemaFor(Solicitud))
+    where?: Where<Solicitud>,
   ): Promise<Count> {
     return this.tipoSolicitudRepository.relacionado(id).patch(solicitud, where);
   }
@@ -103,7 +102,8 @@ export class TipoSolicitudSolicitudController {
   })
   async delete(
     @param.path.number('id') id: number,
-    @param.query.object('where', getWhereSchemaFor(Solicitud)) where?: Where<Solicitud>,
+    @param.query.object('where', getWhereSchemaFor(Solicitud))
+    where?: Where<Solicitud>,
   ): Promise<Count> {
     return this.tipoSolicitudRepository.relacionado(id).delete(where);
   }

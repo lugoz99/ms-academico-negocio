@@ -5,8 +5,11 @@ import {
   model,
   property,
 } from '@loopback/repository';
+import {AreaInvestigacion} from './area-investigacion.model';
 import {ComiteSolicitud} from './comite-solicitud.model';
+import {Modalidad} from './modalidad.model';
 import {Proponente} from './proponente.model';
+import {TipoSolicitud} from './tipo-solicitud.model';
 import {TiposComite} from './tipos-comite.model';
 
 @model({
@@ -80,21 +83,6 @@ export class Solicitud extends Entity {
   @belongsTo(() => Proponente, {name: 'asociado'})
   id_proponente: number;
 
-  @property({
-    type: 'number',
-  })
-  id_area_investigacion?: number;
-
-  @property({
-    type: 'number',
-  })
-  id_tipo_solicitud?: number;
-
-  @property({
-    type: 'number',
-  })
-  id_modalidad?: number;
-
   @hasMany(() => TiposComite, {
     through: {
       model: () => ComiteSolicitud,
@@ -103,6 +91,15 @@ export class Solicitud extends Entity {
     },
   })
   comite_solicitud: TiposComite[];
+
+  @belongsTo(() => AreaInvestigacion, {name: 'areaInvestigacion'})
+  id_area_investigacion: number;
+
+  @belongsTo(() => Modalidad, {name: 'modalidad'})
+  id_modalidad: number;
+
+  @belongsTo(() => TipoSolicitud, {name: 'tipoSolicitud'})
+  id_tipo_solicitud: number;
 
   constructor(data?: Partial<Solicitud>) {
     super(data);

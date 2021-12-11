@@ -43,21 +43,28 @@ export class EvaluacionSolicitud extends Entity {
 
   @property({
     type: 'date',
-    required: true,
+    required: false,
+    default: null,
   })
-  fecha_respuesta: string;
+  fecha_respuesta?: string;
+
+  @property({
+    type: 'number',
+    required: false,
+    default: 0,
+  })
+  respuesta?: number;
 
   @property({
     type: 'string',
-    required: true,
+    required: false,
   })
-  respuesta: string;
-
+  observaciones?: string;
   @property({
     type: 'string',
-    required: true,
+    required: false,
   })
-  observaciones: string;
+  hash?: string;
 
   @hasMany(() => ResultadoEvaluacion, {keyTo: 'id_evaluacionSolicitud'})
   resultadosEvaluaciones: ResultadoEvaluacion[];

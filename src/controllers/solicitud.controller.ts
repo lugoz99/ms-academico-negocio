@@ -1,3 +1,4 @@
+import {service} from '@loopback/core';
 import {
   Count,
   CountSchema,
@@ -17,13 +18,18 @@ import {
   requestBody,
   response,
 } from '@loopback/rest';
-import {Solicitud} from '../models';
-import {SolicitudRepository} from '../repositories';
+import {NotificacionCorreo, Solicitud} from '../models';
+import {ProponenteRepository, SolicitudRepository} from '../repositories';
+import {NotificacionesService} from '../services';
 
 export class SolicitudController {
   constructor(
     @repository(SolicitudRepository)
     public solicitudRepository: SolicitudRepository,
+    @repository(ProponenteRepository)
+    public proponenteRepositori: ProponenteRepository,
+    @service(NotificacionesService)
+    public correoNotificacion: NotificacionesService,
   ) {}
   //@authenticate('admin')
 
@@ -45,7 +51,20 @@ export class SolicitudController {
     })
     solicitud: Omit<Solicitud, 'id'>,
   ): Promise<Solicitud> {
-    return this.solicitudRepository.create(solicitud);
+    let proponente = await this.proponenteRepositori.findById(
+      solicitud.id_modalidad,
+    );
+    if (proponente.correo) {
+      let datos = new NotificacionCorreo();
+      datos.destinatario = proponente.correo;
+      datos.asunto = 'Solicitud registrada';
+      datos.mensaje = `Hola ${proponente.primerNombre} ${proponente.otrosNombres} su solictud  ${solicitud.nombreTrabajo}
+      en la fecha ${solicitud.fechaRadicacion} has sido registrada con existo en nuestro sitema`;
+      this.correoNotificacion.EnviarCorreo(datos);
+    }
+    console.log('Proponente', proponente);
+
+    return await this.solicitudRepository.create(solicitud);
   }
 
   @get('/solicitudes/count')

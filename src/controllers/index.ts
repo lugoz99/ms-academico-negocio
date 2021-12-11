@@ -33,3 +33,7 @@ export * from './carga-archivos.controller';
 export * from './descarga-archivos.controller';
 export * from './departamento-facultad.controller';
 export * from './correo-notificacion.controller';
+export * from './solicitud-area-investigacion.controller';
+export * from './solicitud-modalidad.controller';
+export * from './solicitud-tipo-solicitud.controller';
+export * from './proponente-tipo-vinculacion.controller';

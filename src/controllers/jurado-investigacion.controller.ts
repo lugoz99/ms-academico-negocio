@@ -7,29 +7,36 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
   response,
 } from '@loopback/rest';
-import {JuradoInvestigacion} from '../models';
-import {JuradoInvestigacionRepository} from '../repositories';
+import {Jurado, JuradoInv, JuradoInvestigacion} from '../models';
+import {
+  AreaInvestigacionRepository,
+  JuradoInvestigacionRepository,
+} from '../repositories';
 
 export class JuradoInvestigacionController {
   constructor(
     @repository(JuradoInvestigacionRepository)
-    public juradoInvestigacionRepository : JuradoInvestigacionRepository,
+    public juradoInvestigacionRepository: JuradoInvestigacionRepository,
+    @repository(AreaInvestigacionRepository)
+    public areaInvestigacion: AreaInvestigacionRepository,
   ) {}
 
   @post('/jurado-investigaciones')
   @response(200, {
     description: 'JuradoInvestigacion model instance',
-    content: {'application/json': {schema: getModelSchemaRef(JuradoInvestigacion)}},
+    content: {
+      'application/json': {schema: getModelSchemaRef(JuradoInvestigacion)},
+    },
   })
   async create(
     @requestBody({
@@ -45,6 +52,41 @@ export class JuradoInvestigacionController {
     juradoInvestigacion: Omit<JuradoInvestigacion, 'id'>,
   ): Promise<JuradoInvestigacion> {
     return this.juradoInvestigacionRepository.create(juradoInvestigacion);
+  }
+  @post('/asociar-jurado-investigaciones/{id}')
+  @response(200, {
+    description: 'JuradoInvestigacion model instance',
+    content: {'application/json': {schema: getModelSchemaRef(JuradoInv)}},
+  })
+  async createRelaton(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(JuradoInv, {}),
+        },
+      },
+    })
+    datos: JuradoInv,
+    @param.path.number('id') juradoId: typeof Jurado.prototype.id,
+  ): Promise<Boolean> {
+    if (datos.area_investigacion.length > 0) {
+      datos.area_investigacion.forEach(async (areaId: number) => {
+        let existe = await this.juradoInvestigacionRepository.findOne({
+          where: {
+            id_investigacion: areaId,
+            id_jurado: juradoId,
+          },
+        });
+        if (!existe) {
+          let juradoArea = await this.juradoInvestigacionRepository.create({
+            id_jurado: juradoId,
+            id_investigacion: areaId,
+          });
+          console.log(juradoArea);
+        }
+      });
+    }
+    return true;
   }
 
   @get('/jurado-investigaciones/count')
@@ -65,7 +107,9 @@ export class JuradoInvestigacionController {
       'application/json': {
         schema: {
           type: 'array',
-          items: getModelSchemaRef(JuradoInvestigacion, {includeRelations: true}),
+          items: getModelSchemaRef(JuradoInvestigacion, {
+            includeRelations: true,
+          }),
         },
       },
     },
@@ -92,7 +136,10 @@ export class JuradoInvestigacionController {
     juradoInvestigacion: JuradoInvestigacion,
     @param.where(JuradoInvestigacion) where?: Where<JuradoInvestigacion>,
   ): Promise<Count> {
-    return this.juradoInvestigacionRepository.updateAll(juradoInvestigacion, where);
+    return this.juradoInvestigacionRepository.updateAll(
+      juradoInvestigacion,
+      where,
+    );
   }
 
   @get('/jurado-investigaciones/{id}')
@@ -100,13 +147,16 @@ export class JuradoInvestigacionController {
     description: 'JuradoInvestigacion model instance',
     content: {
       'application/json': {
-        schema: getModelSchemaRef(JuradoInvestigacion, {includeRelations: true}),
+        schema: getModelSchemaRef(JuradoInvestigacion, {
+          includeRelations: true,
+        }),
       },
     },
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(JuradoInvestigacion, {exclude: 'where'}) filter?: FilterExcludingWhere<JuradoInvestigacion>
+    @param.filter(JuradoInvestigacion, {exclude: 'where'})
+    filter?: FilterExcludingWhere<JuradoInvestigacion>,
   ): Promise<JuradoInvestigacion> {
     return this.juradoInvestigacionRepository.findById(id, filter);
   }
@@ -126,7 +176,10 @@ export class JuradoInvestigacionController {
     })
     juradoInvestigacion: JuradoInvestigacion,
   ): Promise<void> {
-    await this.juradoInvestigacionRepository.updateById(id, juradoInvestigacion);
+    await this.juradoInvestigacionRepository.updateById(
+      id,
+      juradoInvestigacion,
+    );
   }
 
   @put('/jurado-investigaciones/{id}')
@@ -137,7 +190,10 @@ export class JuradoInvestigacionController {
     @param.path.number('id') id: number,
     @requestBody() juradoInvestigacion: JuradoInvestigacion,
   ): Promise<void> {
-    await this.juradoInvestigacionRepository.replaceById(id, juradoInvestigacion);
+    await this.juradoInvestigacionRepository.replaceById(
+      id,
+      juradoInvestigacion,
+    );
   }
 
   @del('/jurado-investigaciones/{id}')

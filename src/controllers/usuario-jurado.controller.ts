@@ -1,3 +1,4 @@
+import {service} from '@loopback/core';
 import {
   Count,
   CountSchema,
@@ -7,23 +8,30 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
   response,
 } from '@loopback/rest';
-import {UsuarioJurado} from '../models';
-import {UsuarioJuradoRepository} from '../repositories';
+import {NotificacionCorreo, UsuarioJurado} from '../models';
+import {JuradoRepository, UsuarioJuradoRepository} from '../repositories';
+import {GeneralService, NotificacionesService} from '../services';
 
 export class UsuarioJuradoController {
   constructor(
     @repository(UsuarioJuradoRepository)
-    public usuarioJuradoRepository : UsuarioJuradoRepository,
+    public usuarioJuradoRepository: UsuarioJuradoRepository,
+    @service(GeneralService)
+    public general: GeneralService,
+    @service(NotificacionesService)
+    public servicioNotificaciones: NotificacionesService,
+    @repository(JuradoRepository)
+    public juradoRepository: JuradoRepository,
   ) {}
 
   @post('/usuario-jurados')
@@ -44,7 +52,29 @@ export class UsuarioJuradoController {
     })
     usuarioJurado: Omit<UsuarioJurado, 'id'>,
   ): Promise<UsuarioJurado> {
-    return this.usuarioJuradoRepository.create(usuarioJurado);
+    let juradoExiste = await this.juradoRepository.findById(
+      usuarioJurado.id_jurado,
+    );
+    console.log(juradoExiste.correo);
+    let clave = this.general.crearClaveAleatoria();
+    console.log('Clave usuario : ', clave);
+    usuarioJurado.id_jurado = juradoExiste.id;
+    let claveCifrada = this.general.cifrarTexto(clave);
+    usuarioJurado.clave = claveCifrada;
+    let usuarioCreado = await this.usuarioJuradoRepository.create(
+      usuarioJurado,
+    );
+    if (usuarioCreado) {
+      let datos = new NotificacionCorreo();
+      datos.destinatario = juradoExiste.correo;
+      datos.asunto = 'Usuario del sistema ';
+      datos.mensaje = `${juradoExiste.nombreCompleto} ${clave} para acceder al sistema`;
+      console.log(datos.mensaje);
+      this.servicioNotificaciones.EnviarCorreo(datos);
+      console.log(datos);
+    }
+    console.log(usuarioCreado);
+    return usuarioCreado;
   }
 
   @get('/usuario-jurados/count')
@@ -106,7 +136,8 @@ export class UsuarioJuradoController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(UsuarioJurado, {exclude: 'where'}) filter?: FilterExcludingWhere<UsuarioJurado>
+    @param.filter(UsuarioJurado, {exclude: 'where'})
+    filter?: FilterExcludingWhere<UsuarioJurado>,
   ): Promise<UsuarioJurado> {
     return this.usuarioJuradoRepository.findById(id, filter);
   }
