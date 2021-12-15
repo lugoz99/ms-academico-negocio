@@ -23,3 +23,4 @@ export * from './jurado-inv.model';
 export * from './credenciales.model';
 export * from './credenciales-recuperar-clave.model';
 export * from './credenciales-cambio-clave.model';
+export * from './general-model.model';

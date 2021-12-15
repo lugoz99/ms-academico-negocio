@@ -7,29 +7,31 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
   response,
 } from '@loopback/rest';
-import {DepartamentoProponente} from '../models';
+import {DepartamentoProponente, GeneralModel, Proponente} from '../models';
 import {DepartamentoProponenteRepository} from '../repositories';
 
 export class DepartamentoProponenteController {
   constructor(
     @repository(DepartamentoProponenteRepository)
-    public departamentoProponenteRepository : DepartamentoProponenteRepository,
+    public departamentoProponenteRepository: DepartamentoProponenteRepository,
   ) {}
 
   @post('/departamento-proponentes')
   @response(200, {
     description: 'DepartamentoProponente model instance',
-    content: {'application/json': {schema: getModelSchemaRef(DepartamentoProponente)}},
+    content: {
+      'application/json': {schema: getModelSchemaRef(DepartamentoProponente)},
+    },
   })
   async create(
     @requestBody({
@@ -45,6 +47,42 @@ export class DepartamentoProponenteController {
     departamentoProponente: Omit<DepartamentoProponente, 'id'>,
   ): Promise<DepartamentoProponente> {
     return this.departamentoProponenteRepository.create(departamentoProponente);
+  }
+  @post('/asociar-jurado-investigaciones/{id}')
+  @response(200, {
+    description: 'JuradoInvestigacion model instance',
+    content: {'application/json': {schema: getModelSchemaRef(GeneralModel)}},
+  })
+  async createRelaton(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(GeneralModel, {}),
+        },
+      },
+    })
+    datos: GeneralModel,
+    @param.path.number('id') proponenteId: typeof Proponente.prototype.id,
+  ): Promise<Boolean> {
+    if (datos.arreglo.length > 0) {
+      datos.arreglo.forEach(async (departamentoId: number) => {
+        let existe = await this.departamentoProponenteRepository.findOne({
+          where: {
+            id_proponente: proponenteId,
+            id_departamento: departamentoId,
+          },
+        });
+        if (!existe) {
+          let dptoProponente =
+            await this.departamentoProponenteRepository.create({
+              id_proponente: proponenteId,
+              id_departamento: departamentoId,
+            });
+          console.log(dptoProponente);
+        }
+      });
+    }
+    return true;
   }
 
   @get('/departamento-proponentes/count')
@@ -65,13 +103,16 @@ export class DepartamentoProponenteController {
       'application/json': {
         schema: {
           type: 'array',
-          items: getModelSchemaRef(DepartamentoProponente, {includeRelations: true}),
+          items: getModelSchemaRef(DepartamentoProponente, {
+            includeRelations: true,
+          }),
         },
       },
     },
   })
   async find(
-    @param.filter(DepartamentoProponente) filter?: Filter<DepartamentoProponente>,
+    @param.filter(DepartamentoProponente)
+    filter?: Filter<DepartamentoProponente>,
   ): Promise<DepartamentoProponente[]> {
     return this.departamentoProponenteRepository.find(filter);
   }
@@ -92,7 +133,10 @@ export class DepartamentoProponenteController {
     departamentoProponente: DepartamentoProponente,
     @param.where(DepartamentoProponente) where?: Where<DepartamentoProponente>,
   ): Promise<Count> {
-    return this.departamentoProponenteRepository.updateAll(departamentoProponente, where);
+    return this.departamentoProponenteRepository.updateAll(
+      departamentoProponente,
+      where,
+    );
   }
 
   @get('/departamento-proponentes/{id}')
@@ -100,13 +144,16 @@ export class DepartamentoProponenteController {
     description: 'DepartamentoProponente model instance',
     content: {
       'application/json': {
-        schema: getModelSchemaRef(DepartamentoProponente, {includeRelations: true}),
+        schema: getModelSchemaRef(DepartamentoProponente, {
+          includeRelations: true,
+        }),
       },
     },
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(DepartamentoProponente, {exclude: 'where'}) filter?: FilterExcludingWhere<DepartamentoProponente>
+    @param.filter(DepartamentoProponente, {exclude: 'where'})
+    filter?: FilterExcludingWhere<DepartamentoProponente>,
   ): Promise<DepartamentoProponente> {
     return this.departamentoProponenteRepository.findById(id, filter);
   }
@@ -126,7 +173,10 @@ export class DepartamentoProponenteController {
     })
     departamentoProponente: DepartamentoProponente,
   ): Promise<void> {
-    await this.departamentoProponenteRepository.updateById(id, departamentoProponente);
+    await this.departamentoProponenteRepository.updateById(
+      id,
+      departamentoProponente,
+    );
   }
 
   @put('/departamento-proponentes/{id}')
@@ -137,7 +187,10 @@ export class DepartamentoProponenteController {
     @param.path.number('id') id: number,
     @requestBody() departamentoProponente: DepartamentoProponente,
   ): Promise<void> {
-    await this.departamentoProponenteRepository.replaceById(id, departamentoProponente);
+    await this.departamentoProponenteRepository.replaceById(
+      id,
+      departamentoProponente,
+    );
   }
 
   @del('/departamento-proponentes/{id}')

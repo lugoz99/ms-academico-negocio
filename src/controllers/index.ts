@@ -37,3 +37,4 @@ export * from './solicitud-area-investigacion.controller';
 export * from './solicitud-modalidad.controller';
 export * from './solicitud-tipo-solicitud.controller';
 export * from './proponente-tipo-vinculacion.controller';
+export * from './recordatorio.controller';

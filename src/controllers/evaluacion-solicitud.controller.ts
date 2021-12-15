@@ -21,6 +21,7 @@ import {
 import {Keys} from '../config/keys';
 import {EvaluacionSolicitud, NotificacionCorreo} from '../models';
 import {
+  CorreoNotificacionRepository,
   EvaluacionSolicitudRepository,
   JuradoRepository,
   SolicitudRepository,
@@ -42,6 +43,8 @@ export class EvaluacionSolicitudController {
     public notificaciones: NotificacionesService,
     @service(GeneralService)
     public generar: GeneralService,
+    @service(CorreoNotificacionRepository)
+    public correosNotificacion: CorreoNotificacionRepository,
   ) {}
   //@authenticate('admin')
   @post('/evaluacion-solicitudes')
@@ -71,17 +74,20 @@ export class EvaluacionSolicitudController {
     let jurado = await this.juradoRepository.findById(
       evaluacionSolicitud.id_jurado,
     );
-    console.log('Coreo de jurado evaluador', jurado.correo);
     let evalSolicitud = await this.evaluacionSolicitudRepository.create(
       evaluacionSolicitud,
     );
+    evalSolicitud.fecha_invitacion = Keys.fecha.toString();
+    await this.evaluacionSolicitudRepository.save(evalSolicitud);
     if (evalSolicitud) {
       let d = new NotificacionCorreo();
       d.destinatario = jurado.correo;
       d.asunto = 'Invitacion evaluacion solicitud';
       d.mensaje = `Hola ${jurado.nombreCompleto} usted ha sido elegido
       como posible evaluador para confirmar o rechazar vaya al siguiente enlace
-      ${Keys.enlace}`;
+      <a href="${Keys.enlace}/${
+        (await evalSolicitud).id
+      }">Confirmar Respuesta</a>`;
       this.notificaciones.EnviarCorreo(d);
     }
     return evalSolicitud;
@@ -179,15 +185,16 @@ export class EvaluacionSolicitudController {
     2.Notificaciones a los administradores de sistema con CorreosNot parametrizados
     3..El jurado se crea cuando acepta o se puede manualmente
      */
+    let jurado = await this.juradoRepository.findOne({
+      where: {
+        id: evaluacionSolicitud.id_jurado,
+      },
+    });
     if (await this.evaluacionSolicitudRepository.findById(id)) {
       console.log('La solicitud para evaluar si existe');
     }
     if (evaluacionSolicitud.respuesta == 3) {
-      let jurado = await this.juradoRepository.findOne({
-        where: {
-          id: evaluacionSolicitud.id_jurado,
-        },
-      });
+      console.log('Jurado encontrado', jurado);
       let solicitud = await this.solictudRepository.findOne({
         where: {
           id: evaluacionSolicitud.id_solicitud,
@@ -208,12 +215,26 @@ export class EvaluacionSolicitudController {
           console.log('ESTADO CAMBIADO');
           await this.solictudRepository.save(solicitud);
         }
-        console.log(`El jurado ${jurado?.nombreCompleto} ha aceptado`);
+        let datos = new NotificacionCorreo();
+        datos.asunto = 'Datos de usuario';
+        datos.destinatario = crearUsaurioJurado.usuario;
+        datos.mensaje = `Usuario:${crearUsaurioJurado.usuario} - Clave:${crearUsaurioJurado.clave}`;
+        this.notificaciones.EnviarCorreo(datos);
       }
     } else {
-      console.log(`El jurado No acepto`);
+      console.log(`Notificacion a los a administradores del sistema`);
       evaluacionSolicitud.respuesta = 2;
-      console.log('respuesta solicitud en 2 por no aceptar');
+      const c = await this.correosNotificacion.find({
+        fields: ['correo'],
+      });
+      c.forEach(element => {
+        let datos = new NotificacionCorreo();
+        datos.asunto = 'Respuesta del jurado';
+        datos.destinatario = element.correo;
+        datos.mensaje = `La respuesta del jurado ${jurado?.nombreCompleto}
+        para evaluar la solicitud ha sido rechazada`;
+        this.notificaciones.EnviarCorreo(datos);
+      });
     }
     await this.evaluacionSolicitudRepository.updateById(
       id,

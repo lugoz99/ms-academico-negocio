@@ -7,23 +7,23 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
   response,
 } from '@loopback/rest';
-import {ComiteSolicitud} from '../models';
+import {ComiteSolicitud, GeneralModel, Solicitud} from '../models';
 import {ComiteSolicitudRepository} from '../repositories';
 
 export class ComiteSolicitudController {
   constructor(
     @repository(ComiteSolicitudRepository)
-    public comiteSolicitudRepository : ComiteSolicitudRepository,
+    public comiteSolicitudRepository: ComiteSolicitudRepository,
   ) {}
 
   @post('/solicitudes-comite')
@@ -45,6 +45,41 @@ export class ComiteSolicitudController {
     comiteSolicitud: Omit<ComiteSolicitud, 'id'>,
   ): Promise<ComiteSolicitud> {
     return this.comiteSolicitudRepository.create(comiteSolicitud);
+  }
+  @post('/asociar-jurado-investigaciones/{id}')
+  @response(200, {
+    description: 'JuradoInvestigacion model instance',
+    content: {'application/json': {schema: getModelSchemaRef(GeneralModel)}},
+  })
+  async createRelaton(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(GeneralModel, {}),
+        },
+      },
+    })
+    datos: GeneralModel,
+    @param.path.number('id') solicitudId: typeof Solicitud.prototype.id,
+  ): Promise<Boolean> {
+    if (datos.arreglo.length > 0) {
+      datos.arreglo.forEach(async (comiteId: number) => {
+        let existe = await this.comiteSolicitudRepository.findOne({
+          where: {
+            id_comite: comiteId,
+            id_solicitud: solicitudId,
+          },
+        });
+        if (!existe) {
+          let comiteSolicitud = await this.comiteSolicitudRepository.create({
+            id_comite: comiteId,
+            id_solicitud: solicitudId,
+          });
+          console.log(comiteSolicitud);
+        }
+      });
+    }
+    return true;
   }
 
   @get('/solicitudes-comite/count')
@@ -106,7 +141,8 @@ export class ComiteSolicitudController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(ComiteSolicitud, {exclude: 'where'}) filter?: FilterExcludingWhere<ComiteSolicitud>
+    @param.filter(ComiteSolicitud, {exclude: 'where'})
+    filter?: FilterExcludingWhere<ComiteSolicitud>,
   ): Promise<ComiteSolicitud> {
     return this.comiteSolicitudRepository.findById(id, filter);
   }

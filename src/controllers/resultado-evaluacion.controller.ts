@@ -21,6 +21,7 @@ import {
 import {ResultadoEvaluacion} from '../models';
 import {ResultadoEvaluacionRepository} from '../repositories';
 @authenticate('admin')
+// @authenticate('evaluador')
 export class ResultadoEvaluacionController {
   constructor(
     @repository(ResultadoEvaluacionRepository)
@@ -80,7 +81,7 @@ export class ResultadoEvaluacionController {
   ): Promise<ResultadoEvaluacion[]> {
     return this.resultadoEvaluacionRepository.find(filter);
   }
-
+  @authenticate('evaluador')
   @patch('/resultado-evaluaciones')
   @response(200, {
     description: 'ResultadoEvaluacion PATCH success count',

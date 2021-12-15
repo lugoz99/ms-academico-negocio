@@ -4,14 +4,14 @@ import {UserProfile} from '@loopback/security';
 import parseBearerToken from 'parse-bearer-token';
 import {Keys} from '../config/keys';
 const fetch = require('node-fetch');
-export class AdministradorStrategy implements AuthenticationStrategy {
-  name: string = 'admin';
+export class EvaluadorStrategy implements AuthenticationStrategy {
+  name: string = 'evaluador';
   constructor() {}
   async authenticate(request: Request): Promise<UserProfile | undefined> {
     let token = parseBearerToken(request);
     if (token) {
-      let rol_admin = Keys.rol_administrador;
-      let url_token = `${Keys.url_validar_token}?${Keys.arg_token}=${token}&${Keys.arg_rol_token}=${Keys.rol_administrador}`;
+      let rol_admin = Keys.rol_evaluador;
+      let url_token = `${Keys.url_validar_token}?${Keys.arg_token}=${token}&${Keys.arg_rol_token}=${Keys.rol_evaluador}`;
       //let url_token = `${Keys.url_validar_token}?${Keys.arg_token}=${token}`;
       console.log(url_token);
       let r = '';

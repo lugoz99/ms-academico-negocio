@@ -24,15 +24,16 @@ export namespace Keys {
     '.XLSX',
   ];
   export const rol_administrador = '618b1e2ab236532348cd28ef'; // admin-mongodb
+  export const rol_evaluador = '618b1e2ab236532348cd28ef'; // arreglar rol juradoEvaluador
   export const url_validar_token = 'http://localhost:5001/validar-token';
   export const arg_token = 'token';
   export const arg_rol_token = 'rol';
 
   // Envio Mensajes
-  export const fecha = moment().format('MMMM Do YYYY, h:mm:ss a'); // December 4th 2021, 3:54:07 pm
+  export let fecha = moment().format('MMMM D YYYY, h:mm:ss a'); // December 4th 2021, 3:54:07 pm
   let hashLength = 8;
   export let hash = createHash(hashLength);
-  export let enlace = `<a href="http://localhost:4200">Confirmar respuesta</a>`;
+  export let enlace = `http://localhost:4200/solicitudes/respuesta-invitacion`;
   export const hashNotificacion = 'ABC123';
   export const mensajeEvaluador =
     'Usted ha sido eligo para evaluar una solicitud';
@@ -47,4 +48,6 @@ export namespace Keys {
   export const arg_nombre = 'nombre';
   export const arg_id_persona = 'id';
   export const arg_rol = 'id_rol';
+  export const arg_id_persona_token = 'id';
+  export const arg_id_rol_token = 'id_rol';
 }
